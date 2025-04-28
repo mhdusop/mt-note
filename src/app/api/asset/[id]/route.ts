@@ -1,5 +1,5 @@
 // src/app/api/asset/[id]/route.ts
-import { prisma } from '@/lib/client'
+import { prisma } from '@/libs/client'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {

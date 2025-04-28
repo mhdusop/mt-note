@@ -1,5 +1,5 @@
 // src/app/api/asset/route.ts
-import { prisma } from '@/lib/client'
+import { prisma } from '@/libs/client'
 import { NextRequest, NextResponse } from 'next/server'
 
 // GET all assets
