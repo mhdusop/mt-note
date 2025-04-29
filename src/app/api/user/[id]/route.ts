@@ -14,11 +14,15 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const data = await req.json()
+  const body = await req.json()
 
   const user = await prisma.user.update({
     where: { id: params.id },
-    data,
+    data: {
+      name: body.name,
+      email: body.email,
+      role: body.role, 
+    },
   })
 
   return NextResponse.json(user)
