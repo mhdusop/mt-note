@@ -4,25 +4,25 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 
-interface AssetDialogProps {
+interface ScheduleDialogProps {
    open: boolean
    onClose: () => void
-   assetId: string
+   scheduleId: string
    onDeleted: () => void
 }
 
-export default function AssetDialog({ open, onClose, assetId, onDeleted }: AssetDialogProps) {
+export default function ScheduleDialog({ open, onClose, scheduleId, onDeleted }: ScheduleDialogProps) {
    const [loading, setLoading] = useState(false)
 
    const handleDelete = async () => {
       setLoading(true)
-      const res = await fetch(`/api/asset/${assetId}`, { method: "DELETE" })
+      const res = await fetch(`/api/schedule/${scheduleId}`, { method: "DELETE" })
 
       if (res.ok) {
          onDeleted()
          onClose()
       } else {
-         alert("Failed to delete user")
+         alert("Failed to delete schedule")
       }
 
       setLoading(false)
@@ -34,7 +34,7 @@ export default function AssetDialog({ open, onClose, assetId, onDeleted }: Asset
             <DialogHeader>
                <DialogTitle>Confirm Delete</DialogTitle>
             </DialogHeader>
-            <p>Are you sure you want to delete this asset?</p>
+            <p>Are you sure you want to delete this schedule?</p>
             <DialogFooter className="mt-4">
                <Button variant="outline" onClick={onClose} className="cursor-pointer">Cancel</Button>
                <Button variant="destructive" onClick={handleDelete} disabled={loading} className="cursor-pointer">

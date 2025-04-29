@@ -1,9 +1,16 @@
 import { prisma } from '@/libs/client'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+function getIdFromUrl(req: NextRequest) {
+  const segments = req.nextUrl.pathname.split('/')
+  return segments[segments.length - 1]
+}
+
+export async function GET(req: NextRequest) {
+  const id = getIdFromUrl(req)
+
   const schedule = await prisma.schedule.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: { asset: true, Record: true },
   })
 
@@ -14,20 +21,32 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   return NextResponse.json(schedule)
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest) {
+  const id = getIdFromUrl(req)
   const data = await req.json()
 
   const schedule = await prisma.schedule.update({
-    where: { id: params.id },
-    data,
+    where: { id },
+    data: {
+      date: new Date(data.date),
+      type: data.type,
+      notes: data.notes || undefined,
+      asset: {
+        connect: {
+          id: data.asset_id,
+        },
+      },
+    },
   })
 
   return NextResponse.json(schedule)
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest) {
+  const id = getIdFromUrl(req)
+
   await prisma.schedule.delete({
-    where: { id: params.id },
+    where: { id },
   })
 
   return NextResponse.json({ message: 'Schedule deleted' })
