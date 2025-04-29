@@ -31,12 +31,12 @@ const data = {
    },
    navMain: [
       {
-         title: "Dashboard",
+         title: "Dashboards",
          url: "/dashboard",
          icon: LayoutDashboard,
       },
       {
-         title: "User",
+         title: "Users",
          url: "/dashboard/user",
          icon: UsersRound,
       },
