@@ -12,7 +12,16 @@ export async function POST(req: NextRequest) {
   const data = await req.json()
 
   const schedule = await prisma.schedule.create({
-    data,
+    data: {
+      date: new Date(data.date),
+      type: data.type,
+      notes: data.notes || undefined,
+      asset: {
+        connect: {
+          id: data.asset_id,
+        },
+      },
+    },
   })
 
   return NextResponse.json(schedule)
