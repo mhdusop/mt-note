@@ -1,4 +1,5 @@
 import { prisma } from '@/libs/client'
+import { Status } from '@prisma/client'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
@@ -21,11 +22,19 @@ export async function PUT(req: NextRequest) {
   const id = req.url.split('/').pop()
   if (!id) return NextResponse.json({ error: 'ID is required' }, { status: 400 })
 
-  const data = await req.json()
+  const body = await req.json()
 
   const record = await prisma.record.update({
     where: { id },
-    data,
+    data: {
+      asset_id: body.asset_id,
+      schedule_id: body.schedule_id || undefined,
+      performed_date: new Date(body.performed_date),
+      performed_by: body.performed_by,
+      findings: body.findings || undefined,
+      action_taken: body.action_taken || undefined,
+      status: body.status as Status,
+    },
   })
 
   return NextResponse.json(record)
