@@ -1,23 +1,35 @@
-import AssetForm from "../../components/AssetForm"
-import { prisma } from "@/libs/client"
-import { notFound } from "next/navigation"
+import AssetForm from "../../components/AssetForm";
+import { notFound } from "next/navigation";
 
-export default async function EditAssetPage({ params }: { params: { id: string } }) {
-   const asset = await prisma.asset.findUnique({
-      where: { id: params.id },
-   })
+interface Props {
+   params: { id: string };
+}
 
-   if (!asset) return notFound()
+export default async function EditAssetPage(props: Props) {
+   const id = props.params.id;
 
-   return (
-      <div className="max-w-lg mx-auto mt-6">
-         <h1 className="text-2xl font-semibold mb-4">Edit Asset</h1>
-         <AssetForm
-            data={{
-               ...asset,
-               description: asset.description ?? ""
-            }}
-         />
-      </div>
-   )
+   try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/asset/${id}`, {
+         cache: "no-store",
+      });
+
+      if (!res.ok) return notFound();
+
+      const asset = await res.json();
+
+      return (
+         <div className="max-w-lg mx-auto mt-6">
+            <h1 className="text-2xl font-semibold mb-4">Edit Asset</h1>
+            <AssetForm
+               data={{
+                  ...asset,
+                  description: asset.description ?? "",
+               }}
+            />
+         </div>
+      );
+   } catch (error) {
+      console.error("Error fetching asset:", error);
+      return notFound();
+   }
 }

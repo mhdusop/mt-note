@@ -2,12 +2,7 @@
 
 import { useEffect, useState } from "react"
 import {
-   Table,
-   TableBody,
-   TableCell,
-   TableHead,
-   TableHeader,
-   TableRow,
+   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table"
 import { User } from "@/interfaces/user"
 import { SquarePen, Trash, UserRoundPlus } from "lucide-react"
@@ -16,11 +11,27 @@ import UserDialog from "./components/UserDialog"
 
 export default function UserPage() {
    const router = useRouter()
-
    const [users, setUsers] = useState<User[]>([])
    const [loading, setLoading] = useState(true)
    const [openDialog, setOpenDialog] = useState(false)
    const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
+
+   useEffect(() => {
+      const sessionData = sessionStorage.getItem("user")
+
+      if (!sessionData) {
+         router.replace("/auth/login")
+         return
+      }
+
+      const session = JSON.parse(sessionData)
+      if (session.role !== "ADMIN") {
+         router.replace("/dashboard")
+         return
+      }
+
+      fetchUsers()
+   }, [])
 
    const fetchUsers = async () => {
       try {
@@ -33,10 +44,6 @@ export default function UserPage() {
          setLoading(false)
       }
    }
-
-   useEffect(() => {
-      fetchUsers()
-   }, [])
 
    const handleEdit = (id: string) => {
       router.push(`/dashboard/user/${id}/edit`)
@@ -53,7 +60,7 @@ export default function UserPage() {
                className="mb-1 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg flex justify-center items-center gap-1 cursor-pointer"
             >
                <UserRoundPlus size={17} /> Add User
-            </button >
+            </button>
          </div>
          <Table>
             <TableHeader>

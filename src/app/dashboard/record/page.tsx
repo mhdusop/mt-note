@@ -29,6 +29,19 @@ export default function RecordPage() {
    }
 
    useEffect(() => {
+      const sessionData = sessionStorage.getItem("user")
+
+      if (!sessionData) {
+         router.replace("/auth/login")
+         return
+      }
+
+      const session = JSON.parse(sessionData)
+      if (session.role !== "ADMIN" && session.role !== "MEMBER") {
+         router.replace("/dashboard")
+         return
+      }
+
       fetchRecords()
    }, [])
 
