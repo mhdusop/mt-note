@@ -44,6 +44,20 @@ export default function AssetPage() {
    }
 
    useEffect(() => {
+      const sessionData = sessionStorage.getItem("user")
+      console.log(sessionData);
+
+      if (!sessionData) {
+         router.replace("/auth/login")
+         return
+      }
+
+      const session = JSON.parse(sessionData)
+      if (session.role !== "ADMIN") {
+         router.replace("/dashboard")
+         return
+      }
+
       fetchAssets()
    }, [])
 

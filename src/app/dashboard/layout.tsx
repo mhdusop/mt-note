@@ -1,12 +1,8 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { AppSidebar } from "@/components/app-sidebar"
-import {
-   Breadcrumb,
-   BreadcrumbItem,
-   BreadcrumbLink,
-   BreadcrumbList,
-   BreadcrumbPage,
-   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import {
    SidebarInset,
@@ -14,7 +10,38 @@ import {
    SidebarTrigger,
 } from "@/components/ui/sidebar"
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+   children,
+}: {
+   children: React.ReactNode
+}) {
+   const router = useRouter()
+   const [user, setUser] = useState<null | {
+      name: string
+      email: string
+      role: string
+   }>(null)
+
+   useEffect(() => {
+      const stored = sessionStorage.getItem("user")
+
+      if (!stored) {
+         router.push("/auth/login")
+         return
+      }
+
+      try {
+         const parsed = JSON.parse(stored)
+         setUser(parsed)
+      } catch {
+         sessionStorage.removeItem("user")
+         router.push("/auth/login")
+      }
+   }, [router])
+
+
+   if (!user) return null
+
    return (
       <SidebarProvider>
          <AppSidebar />
@@ -23,19 +50,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                <div className="flex items-center gap-2 px-4">
                   <SidebarTrigger className="-ml-1" />
                   <Separator orientation="vertical" className="mr-2 h-4" />
-                  <Breadcrumb>
-                     <BreadcrumbList>
-                        <BreadcrumbItem className="hidden md:block">
-                           <BreadcrumbLink href="#">
-                              Building Your Application
-                           </BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className="hidden md:block" />
-                        <BreadcrumbItem>
-                           <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                        </BreadcrumbItem>
-                     </BreadcrumbList>
-                  </Breadcrumb>
                </div>
             </header>
             <main className="flex flex-1 flex-col gap-4 p-4 pt-0">

@@ -23,52 +23,71 @@ import {
    SidebarRail,
 } from "@/components/ui/sidebar"
 
-const data = {
-   user: {
-      name: "shadcn",
-      email: "m@example.com",
-      avatar: "/avatars/shadcn.jpg",
-   },
-   navMain: [
+export function AppSidebar() {
+   const [user, setUser] = React.useState<null | {
+      name: string
+      email: string
+      role: string
+   }>(null)
+
+   React.useEffect(() => {
+      const stored = sessionStorage.getItem("user")
+
+      if (stored) {
+         try {
+            const parsed = JSON.parse(stored)
+            setUser(parsed)
+         } catch (err) {
+            console.error(err);
+            sessionStorage.removeItem("user")
+            setUser(null)
+         }
+      }
+   }, [])
+
+   if (!user) return null
+
+   const navMain = [
       {
          title: "Dashboards",
          url: "/dashboard",
          icon: LayoutDashboard,
+         visible: true
       },
       {
          title: "Users",
          url: "/dashboard/user",
          icon: UsersRound,
+         visible: user.role === "ADMIN",
       },
       {
          title: "Assets",
          url: "/dashboard/asset",
          icon: Box,
+         visible: user.role === "ADMIN",
       },
       {
          title: "Records",
          url: "/dashboard/record",
          icon: NotepadText,
+         visible:
+            user.role === "ADMIN" ||
+            user.role === "MEMBER",
       },
       {
          title: "Schedules",
          url: "/dashboard/schedule",
          icon: CalendarDays,
-         isActive: true,
+         visible: user.role === "ADMIN" || user.role === "MANAGER",
       },
-   ],
-}
+   ]
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
    return (
-      <Sidebar collapsible="icon" {...props}>
+      <Sidebar>
          <SidebarHeader>
             <SidebarMenu>
                <SidebarMenuItem>
-                  <SidebarMenuButton
-                     asChild
-                     className="data-[slot=sidebar-menu-button]:!p-1.5"
-                  >
+                  <SidebarMenuButton asChild>
                      <a href="#">
                         <ArrowUpCircleIcon className="h-5 w-5" />
                         <span className="text-base font-semibold">PLANS</span>
@@ -78,10 +97,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenu>
          </SidebarHeader>
          <SidebarContent>
-            <NavMain items={data.navMain} />
+            <NavMain items={navMain.filter(item => item.visible)} />
          </SidebarContent>
          <SidebarFooter>
-            <NavUser user={data.user} />
+            <NavUser user={user} />
          </SidebarFooter>
          <SidebarRail />
       </Sidebar>

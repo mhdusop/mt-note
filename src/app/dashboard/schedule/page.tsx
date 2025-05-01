@@ -34,8 +34,21 @@ export default function SchedulePage() {
          setLoading(false)
       }
    }
-
    useEffect(() => {
+      const sessionData = sessionStorage.getItem("user")
+      console.log(sessionData);
+
+      if (!sessionData) {
+         router.replace("/auth/login")
+         return
+      }
+
+      const session = JSON.parse(sessionData)
+      if (session.role !== "ADMIN" && session.role !== "MANAGER") {
+         router.replace("/dashboard")
+         return
+      }
+
       fetchSchedules()
    }, [])
 
