@@ -1,5 +1,6 @@
 "use client"
 
+import { formatDate } from "@/app/utils/formatDate"
 import { Asset } from "@/interfaces/asset"
 import { Record } from "@/interfaces/record"
 import { Schedule } from "@/interfaces/schedule"
@@ -91,7 +92,7 @@ export default function RecordForm({ data, onSuccess }: RecordFormProps) {
             <option value="">Pilih Jadwal</option>
             {schedules.map((s) => (
                <option key={s.id} value={s.id}>
-                  {s.date}
+                  {formatDate(s.date)}
                </option>
             ))}
          </select>
