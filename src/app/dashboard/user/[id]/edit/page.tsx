@@ -2,8 +2,9 @@ import { prisma } from "@/libs/client"
 import { notFound } from "next/navigation"
 import UserForm from "../../components/UserForm"
 
-export default async function EditUserPage({ params }: { params: { id: string } }) {
-   const user = await prisma.user.findUnique({ where: { id: params.id } })
+export default async function EditUserPage({ params }: { params: Promise<{ id: string }> }) {
+   const {id} = await params
+   const user = await prisma.user.findUnique({ where: { id } })
 
    if (!user) return notFound()
 

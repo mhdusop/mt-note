@@ -1,14 +1,19 @@
-import { notFound } from "next/navigation"
-import RecordForm from "../../components/RecordForm"
-import { prisma } from "@/libs/client"
-import { Status } from "@/interfaces/status"
+import { notFound } from "next/navigation";
+import RecordForm from "../../components/RecordForm";
+import { prisma } from "@/libs/client";
+import { Status } from "@/interfaces/status";
 
-export default async function EditRecordPage({ params }: { params: { id: string } }) {
+export default async function EditRecordPage({
+   params,
+}: {
+   params: Promise<{ id: string }>;
+}) {
+   const { id } = await params;
    const record = await prisma.record.findUnique({
-      where: { id: params.id },
-   })
+      where: { id },
+   });
 
-   if (!record) return notFound()
+   if (!record) return notFound();
 
    return (
       <div className="p-6">
@@ -16,7 +21,6 @@ export default async function EditRecordPage({ params }: { params: { id: string 
          <RecordForm
             data={{
                id: record.id,
-               asset_id: record.asset_id,
                schedule_id: record.schedule_id ?? "",
                performed_by: record.performed_by,
                performed_date: record.performed_date.toISOString().slice(0, 16),
@@ -26,5 +30,5 @@ export default async function EditRecordPage({ params }: { params: { id: string 
             }}
          />
       </div>
-   )
+   );
 }

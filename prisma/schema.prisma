@@ -21,7 +21,6 @@ model Asset {
   location    String
   description String?
   schedules   Schedule[]
-  records     Record[]
   created_at  DateTime   @default(now())
   updated_at  DateTime   @updatedAt
 }
@@ -34,25 +33,23 @@ model Schedule {
   notes    String?
 
   asset      Asset    @relation(fields: [asset_id], references: [id])
+  record     Record?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  Record     Record[]
 }
 
 model Record {
   id             String   @id @default(uuid())
-  asset_id       String
-  schedule_id    String?
+  schedule_id    String   @unique
   performed_date DateTime
   performed_by   String
   findings       String?
   action_taken   String?
   status         Status
 
-  asset      Asset     @relation(fields: [asset_id], references: [id])
-  schedule   Schedule? @relation(fields: [schedule_id], references: [id])
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  schedule   Schedule @relation(fields: [schedule_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model User {

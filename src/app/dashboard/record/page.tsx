@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { Record } from "@/interfaces/record"
 import RecordDialog from "./components/RecordDialog"
 import { formatDate } from "@/app/utils/formatDate"
+import { Badge } from "@/components/ui/badge"
 
 export default function RecordPage() {
    const router = useRouter()
@@ -66,7 +67,6 @@ export default function RecordPage() {
          <Table>
             <TableHeader>
                <TableRow>
-                  <TableHead>Asset</TableHead>
                   <TableHead>Performed By</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Status</TableHead>
@@ -76,10 +76,19 @@ export default function RecordPage() {
             <TableBody>
                {records.map((record) => (
                   <TableRow key={record.id}>
-                     <TableCell>{record.asset?.name || "N/A"}</TableCell>
                      <TableCell>{record.performed_by}</TableCell>
                      <TableCell>{formatDate(record.performed_date)}</TableCell>
-                     <TableCell>{record.status}</TableCell>
+                     <TableCell>
+                        <Badge className={
+                           record.status === "COMPLETED"
+                              ? "bg-green-500 text-white"
+                              : record.status === "PENDING"
+                                 ? "bg-yellow-400 text-black"
+                                 : "bg-orange-500 text-white"
+                        }>
+                           {record.status}
+                        </Badge>
+                     </TableCell>
                      <TableCell className="text-right">
                         <button onClick={() => handleEdit(record.id)} className="cursor-pointer">
                            <SquarePen className="text-yellow-400" size={18} />

@@ -53,9 +53,10 @@ export default function DashboardLayout({
                </div>
             </header>
             <main className="flex flex-1 flex-col gap-4 p-4 pt-0">
-               {children}
+            <div className="min-h-screen bg-gray-50">{children}</div>
             </main>
          </SidebarInset>
       </SidebarProvider>
    )
 }
+
