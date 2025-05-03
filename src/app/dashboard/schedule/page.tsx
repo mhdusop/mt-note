@@ -75,6 +75,7 @@ export default function SchedulePage() {
                   <TableHead>Asset</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Type</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>Notes</TableHead>
                   <TableHead className="text-right">Action</TableHead>
                </TableRow>
@@ -85,6 +86,17 @@ export default function SchedulePage() {
                      <TableCell>{schedule.asset.name}</TableCell>
                      <TableCell>{formatDate(schedule.date)}</TableCell>
                      <TableCell>{schedule.type}</TableCell>
+                     <TableCell>
+                        {schedule.record?.status === "COMPLETED" ? (
+                           <span className="px-2 py-1 text-xs font-semibold rounded bg-green-500 text-white">
+                              Complete
+                           </span>
+                        ) : (
+                           <span className="px-2 py-1 text-xs font-semibold rounded bg-red-500 text-white">
+                              Uncomplete
+                           </span>
+                        )}
+                     </TableCell>
                      <TableCell>{schedule.notes || "-"}</TableCell>
                      <TableCell className="text-right space-x-2">
                         <button onClick={() => handleEdit(schedule.id)} className="cursor-pointer">

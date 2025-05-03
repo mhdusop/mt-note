@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
 
   const schedule = await prisma.schedule.findUnique({
     where: { id },
-    include: { asset: true, Record: true },
+    include: { asset: true, record: true },
   })
 
   if (!schedule) {

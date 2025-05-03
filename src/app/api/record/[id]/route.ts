@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
 
   const record = await prisma.record.findUnique({
     where: { id },
-    include: { asset: true, schedule: true },
+    include: { schedule: true },
   })
 
   if (!record) {
@@ -27,7 +27,6 @@ export async function PUT(req: NextRequest) {
   const record = await prisma.record.update({
     where: { id },
     data: {
-      asset_id: body.asset_id,
       schedule_id: body.schedule_id || undefined,
       performed_date: new Date(body.performed_date),
       performed_by: body.performed_by,

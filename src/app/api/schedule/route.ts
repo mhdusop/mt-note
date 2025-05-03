@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET() {
   const schedules = await prisma.schedule.findMany({
-    include: { asset: true, Record: true },
+    include: { asset: true, record: true },
   })
   return NextResponse.json(schedules)
 }

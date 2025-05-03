@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
 
   const asset = await prisma.asset.findUnique({
     where: { id },
-    include: { schedules: true, records: true },
+    include: { schedules: true },
   })
 
   if (!asset) {

@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 // GET all assets
 export async function GET() {
   const assets = await prisma.asset.findMany({
-    include: { schedules: true, records: true },
+    include: { schedules: true },
   })
   return NextResponse.json(assets)
 }

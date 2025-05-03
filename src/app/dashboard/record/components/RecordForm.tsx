@@ -1,7 +1,6 @@
 "use client"
 
 import { formatDate } from "@/app/utils/formatDate"
-import { Asset } from "@/interfaces/asset"
 import { Record } from "@/interfaces/record"
 import { Schedule } from "@/interfaces/schedule"
 import { Status } from "@/interfaces/status"
@@ -15,7 +14,6 @@ interface RecordFormProps {
 export default function RecordForm({ data, onSuccess }: RecordFormProps) {
    const [form, setForm] = useState<Partial<Record>>({
       id: data?.id,
-      asset_id: data?.asset_id ?? "",
       schedule_id: data?.schedule_id ?? "",
       performed_date: data?.performed_date ?? "",
       performed_by: data?.performed_by ?? "",
@@ -25,20 +23,16 @@ export default function RecordForm({ data, onSuccess }: RecordFormProps) {
    })
 
    const [loading, setLoading] = useState(false)
-   const [assets, setAssets] = useState<Asset[]>([])
    const [schedules, setSchedules] = useState<Schedule[]>([])
 
    useEffect(() => {
-      const fetchOptions = async () => {
-         const [aRes, sRes] = await Promise.all([
-            fetch("/api/asset"),
-            fetch("/api/schedule"),
-         ])
-         setAssets(await aRes.json())
-         setSchedules(await sRes.json())
+      const fetchSchedules = async () => {
+         const res = await fetch("/api/schedule")
+         const data = await res.json()
+         setSchedules(data)
       }
 
-      fetchOptions()
+      fetchSchedules()
    }, [])
 
    const handleSubmit = async (e: React.FormEvent) => {
@@ -70,20 +64,6 @@ export default function RecordForm({ data, onSuccess }: RecordFormProps) {
 
    return (
       <form onSubmit={handleSubmit} className="space-y-4">
-         <select
-            required
-            value={form.asset_id}
-            onChange={(e) => setForm({ ...form, asset_id: e.target.value })}
-            className="w-full border px-3 py-2 rounded"
-         >
-            <option value="">Pilih Asset</option>
-            {assets.map((a) => (
-               <option key={a.id} value={a.id}>
-                  {a.name}
-               </option>
-            ))}
-         </select>
-
          <select
             value={form.schedule_id}
             onChange={(e) => setForm({ ...form, schedule_id: e.target.value })}
